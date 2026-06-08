@@ -34,12 +34,15 @@ class DynamicTfComponent : public rclcpp::Node {
 
     this->declare_parameter("frame_prefix", "");
     frame_prefix_ = this->get_parameter("frame_prefix").as_string();
+    this->declare_parameter("use_kachaka_localization", true);
+    use_kachaka_localization_ =
+        this->get_parameter("use_kachaka_localization").as_bool();
     stub_ = GetSharedStub(declare_parameter("server_uri", ""));
 
     RCLCPP_INFO(this->get_logger(), "get stub");
 
-    dynamic_tf_client_ =
-        std::make_unique<TfStreamClient>(frame_prefix_, stub_, this);
+    dynamic_tf_client_ = std::make_unique<TfStreamClient>(
+        frame_prefix_, stub_, this, use_kachaka_localization_);
 
     dynamic_tf_client_->ReadStream();
     RCLCPP_INFO(this->get_logger(), "start read dynamic tf");
@@ -51,6 +54,7 @@ class DynamicTfComponent : public rclcpp::Node {
 
  private:
   std::string frame_prefix_;
+  bool use_kachaka_localization_;
   std::shared_ptr<kachaka_api::KachakaApi::Stub> stub_{nullptr};
   std::unique_ptr<TfStreamClient> dynamic_tf_client_;
 };

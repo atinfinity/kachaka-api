@@ -23,13 +23,14 @@ class TfStreamClient {
  public:
   TfStreamClient(std::string frame_prefix,
                  std::shared_ptr<kachaka_api::KachakaApi::Stub> stub,
-                 rclcpp::Node* node);
+                 rclcpp::Node* node, bool use_kachaka_localization = true);
   void ReadStream();
 
  private:
   std::string frame_prefix_;
   std::shared_ptr<kachaka_api::KachakaApi::Stub> stub_{nullptr};
   rclcpp::Node* node_;
+  bool use_kachaka_localization_;
   typename rclcpp::Publisher<tf2_msgs::msg::TFMessage>::SharedPtr publisher_;
 };
 
